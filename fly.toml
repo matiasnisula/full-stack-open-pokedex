@@ -19,7 +19,7 @@ processes = []
   internal_port = 8080
   processes = ["app"]
   protocol = "tcp"
-  script_checks = []
+
   [services.concurrency]
     hard_limit = 25
     soft_limit = 20
@@ -53,11 +53,10 @@ processes = []
 
   [[services.script_checks]]
     command = "/health_check.sh"
-    args = []
     grace_period = "4s"
     interval = "10s"
     restart_limit = 0
-    timeout = 1s
+    timeout = "1s"
 
 [deploy]
   release_command = "npm run build"
