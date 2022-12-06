@@ -1,5 +1,8 @@
 #!/bin/bash
-
-echo "Hello from shell script"
-
-exit 0
+RESULT=$(curl https://proud-fog-1145.fly.dev/health)
+EXPECTED="ok"
+if [ "$RESULT" = "$EXPECTED" ]; then
+    exit 0
+else
+    exit 1
+fi
