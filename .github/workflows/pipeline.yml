@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - master
+  pull_request:
+    branches: [master]
+    types: [opened, synchronize]
 
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
@@ -19,11 +22,11 @@ jobs:
           node-version: "16"
       - name: npm install
         run: npm install
-      - name: lint
+      - name: Lint
         run: npm run eslint
-      - name: build
+      - name: Build
         run: npm run build
-      - name: test
+      - name: Test
         run: npm run test
       - name: e2e tests
         uses: cypress-io/github-action@v4
@@ -32,4 +35,5 @@ jobs:
           start: npm run start-prod
           wait-on: http://localhost:5000
       - name: deploy fly.io
+        if: ${{ github.event_name == 'push' }}
         run: flyctl deploy --remote-only
