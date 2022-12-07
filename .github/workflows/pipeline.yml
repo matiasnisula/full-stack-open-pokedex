@@ -52,3 +52,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
           SKIP_DEPLOY_AND_TAG: ${{ contains( join( env.COMMIT_MESSAGES ), '#skip' ) }}
+  testing:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: print env commit-msg
+        run: |
+          echo "$COMMIT_MESSAGES"
+      - name: print env skip-deploy
+        run: |
+          echo "$SKIP_DEPLOY_AND_TAG"
+        env:
+          SKIP_DEPLOY_AND_TAG: ${{ contains( join( env.COMMIT_MESSAGES ), '#skip' ) }}
