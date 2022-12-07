@@ -11,7 +11,8 @@ on:
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
   COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
-  SKIP_DEPLOY_AND_TAG: ${{ contains( join( env.COMMIT_MESSAGES ), '#skip' ) }}
+  COMMIT_MESSAGE_STRING: ${{ join( env.COMMIT_MESSAGES ) }}
+  SKIP_DEPLOY_AND_TAG: ${{ contains( env.COMMIT_MESSAGE_STRING, '#skip' ) }}
 
 jobs:
   simple_deployment_pipeline:
