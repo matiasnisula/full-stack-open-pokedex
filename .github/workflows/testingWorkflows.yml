@@ -3,22 +3,34 @@ name: Testing stuff
 on:
   push:
     branches:
-      - main
+      - master
+
+  pull_request:
+    branches: [master]
+    types: [opened, synchronize]
+
+
+
+env:
+  COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
+  SKIP_DEPLOY_AND_TAG: ${{ contains( join( toJson(github.event.commits.*.message) ), '#skip' ) }}
 
 jobs:
-  a_test_job:
+  testing:
+    env:
+      COMMIT_MESSAGES_STRING: ${{ join( toJson(github.event.commits.*.message) ) }}
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
-      - name: github context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
-      - name: commits
-        env:
-          COMMITS: ${{ toJson(github.event.commits) }}
-        run: echo "$COMMITS"
-      - name: commit messages
-        env:
-          COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
+      - name: print env commit-msg
         run: echo "$COMMIT_MESSAGES"
+      - name: print env commit-msg_str
+        run: echo "$COMMIT_MESSAGES_STRING"
+      - name: print env skip-deploy
+        run: echo "$SKIP_DEPLOY_AND_TAG"
+      - name: skip deploy true
+        if: ${{ contains( join( toJson(github.event.commits.*.message) ), '#skip' ) }}
+        run: echo "SKIP_DEPLOY_AND_TAG=TRUE"
+      - name: skip deploy false
+        if: ${{ !contains( join( toJson(github.event.commits.*.message) ), '#skip' ) }}
+        run: echo "SKIP_DEPLOY_AND_TAG=FALSE"
