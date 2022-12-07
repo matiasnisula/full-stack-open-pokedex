@@ -10,6 +10,7 @@ on:
     types: [opened, synchronize]
 env:
   COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
+  SKIP_DEPLOY_AND_TAG: ${{ contains( join( env.COMMIT_MESSAGES ), '#skip' ) }}
 
 testing:
     runs-on: ubuntu-20.04
@@ -21,12 +22,8 @@ testing:
       - name: print env skip-deploy
         run: |
           echo "$SKIP_DEPLOY_AND_TAG"
-        env:
-          SKIP_DEPLOY_AND_TAG: ${{ contains( join( env.COMMIT_MESSAGES ), '#skip' ) }}
       - name: test expressions
         if: ${{ env.SKIP_DEPLOY_AND_TAG }}
         - run: cat "SKIP_DEPLOY_AND_TAG=TRUE"
         if: ${{ !env.SKIP_DEPLOY_AND_TAG }}
         - run: cat "SKIP_DEPLOY_AND_TAG=FALSE"
-        env:
-          SKIP_DEPLOY_AND_TAG: ${{ contains( join( env.COMMIT_MESSAGES ), '#skip' ) }}
