@@ -8,21 +8,25 @@ on:
   pull_request:
     branches: [master]
     types: [opened, synchronize]
+env:
+  COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
 
-jobs:
-  a_test_job:
+testing:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
-      - name: github context
+      - name: print env commit-msg
+        run: |
+          echo "$COMMIT_MESSAGES"
+      - name: print env skip-deploy
+        run: |
+          echo "$SKIP_DEPLOY_AND_TAG"
         env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
-      - name: commits
+          SKIP_DEPLOY_AND_TAG: ${{ contains( join( env.COMMIT_MESSAGES ), '#skip' ) }}
+      - name: test expressions
+        if: ${{ env.SKIP_DEPLOY_AND_TAG }}
+        - run: cat "SKIP_DEPLOY_AND_TAG=TRUE"
+        if: ${{ !env.SKIP_DEPLOY_AND_TAG }}
+        - run: cat "SKIP_DEPLOY_AND_TAG=FALSE"
         env:
-          COMMITS: ${{ toJson(github.event.commits) }}
-        run: echo "$COMMITS"
-      - name: commit messages
-        env:
-          COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
-        run: echo "$COMMIT_MESSAGES"
+          SKIP_DEPLOY_AND_TAG: ${{ contains( join( env.COMMIT_MESSAGES ), '#skip' ) }}
