@@ -22,3 +22,7 @@ jobs:
         env:
           COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
         run: echo "$COMMIT_MESSAGES"
+      - name: includesSkip
+        env:
+          SKIP_DEPLOY_AND_TAG: ${{ contains( join( $COMMIT_MESSAGES ), '#skip' ) }}
+        run: echo $SKIP_DEPLOY_AND_TAG
