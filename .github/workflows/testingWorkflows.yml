@@ -5,6 +5,13 @@ on:
     branches:
       - master
 
+  pull_request:
+    branches: [master]
+    types: [opened, synchronize]
+
+env:
+  SKIP_DEPLOY_AND_TAG: ${{ contains( join( $COMMIT_MESSAGES ), '#skip' ) }}
+
 jobs:
   a_test_job:
     runs-on: ubuntu-20.04
@@ -23,6 +30,4 @@ jobs:
           COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
         run: echo "$COMMIT_MESSAGES"
       - name: includesSkip
-        env:
-          SKIP_DEPLOY_AND_TAG: ${{ contains( join( $COMMIT_MESSAGES ), '#skip' ) }}
-        run: echo $SKIP_DEPLOY_AND_TAG
+        run: echo ${{ env.SKIP_DEPLOY_AND_TAG }}
