@@ -54,9 +54,9 @@ jobs:
           SKIP_DEPLOY_AND_TAG: ${{ contains( join( env.COMMIT_MESSAGES ), '#skip' ) }}
   testing:
     runs-on: ubuntu-20.04
-    env:
-      SKIP_DEPLOY_AND_TAG: ${{ contains( join( env.COMMIT_MESSAGES ), '#skip' ) }}
     steps:
+      env:
+        SKIP_DEPLOY_AND_TAG: ${{ contains( join( env.COMMIT_MESSAGES ), '#skip' ) }}
       - uses: actions/checkout@v3
       - name: print env commit-msg
         run: |
@@ -64,4 +64,3 @@ jobs:
       - name: print env skip-deploy
         run: |
           echo "$SKIP_DEPLOY_AND_TAG"
-    
