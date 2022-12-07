@@ -12,7 +12,7 @@ env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
   if: ${{ github.event_name == 'push' }}
   COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
-  SKIP_DEPLOY_AND_TAG: ${{ contains( join( env.COMMIT_MESSAGES ), '#skip' ) }}
+  SKIP_DEPLOY_AND_TAG: ${{ contains( ${{ join( env.COMMIT_MESSAGES ) }}, '#skip' ) }}
 
 jobs:
   simple_deployment_pipeline:
