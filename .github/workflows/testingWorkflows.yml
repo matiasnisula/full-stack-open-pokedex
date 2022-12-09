@@ -18,11 +18,9 @@ testing:
     steps:
       - uses: actions/checkout@v3
       - name: print env commit-msg
-        run: |
-          echo "${COMMIT_MESSAGES}"
+        run: echo "$COMMIT_MESSAGES"
       - name: print env skip-deploy
-        run: |
-          echo "${SKIP_DEPLOY_AND_TAG}"
+        run: echo "$SKIP_DEPLOY_AND_TAG"
       - name: test expressions
         if: ${{ env.SKIP_DEPLOY_AND_TAG == 'true' }}
           run: cat "SKIP_DEPLOY_AND_TAG=TRUE"
