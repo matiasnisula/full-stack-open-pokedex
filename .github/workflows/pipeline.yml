@@ -40,11 +40,10 @@ jobs:
           github.event_name == 'push' &&
           !contains( join( toJson(github.event.commits.*.message) ), '#skip' )
         run: flyctl deploy --remote-only
-      - name: print deploy context
-        run: echo "${{ toJson(steps.deploy) }}"
       - name: Discord notification success
         uses: rjstone/discord-webhook-notify@v1
-        if: failure()
+        if: |
+          success() && steps.deploy.outcome != 'skipped'
         with:
           severity: info
           details: Build succeeded!
