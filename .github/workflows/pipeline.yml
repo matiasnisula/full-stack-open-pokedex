@@ -35,13 +35,16 @@ jobs:
           start: npm run start-prod
           wait-on: http://localhost:5000
       - name: deploy fly.io
+        id: deploy
         if: |
           github.event_name == 'push' &&
           !contains( join( toJson(github.event.commits.*.message) ), '#skip' )
         run: flyctl deploy --remote-only
+      - name: print deploy context
+        run: echo "${{ toJson(steps.deploy) }}"
       - name: Discord notification success
         uses: rjstone/discord-webhook-notify@v1
-        if: success()
+        if: failure()
         with:
           severity: info
           details: Build succeeded!
