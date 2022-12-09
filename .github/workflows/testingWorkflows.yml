@@ -11,7 +11,8 @@ on:
 env:
   COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
 
-testing:
+jobs:
+  testing:
     env:
       SKIP_DEPLOY_AND_TAG: ${{ contains( join( env.COMMIT_MESSAGES ), '#skip' ) }}
     runs-on: ubuntu-20.04
