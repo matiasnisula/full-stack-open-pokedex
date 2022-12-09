@@ -10,7 +10,6 @@ on:
 
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-  COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
 
 jobs:
   simple_deployment_pipeline:
@@ -36,9 +35,9 @@ jobs:
           start: npm run start-prod
           wait-on: http://localhost:5000
       - name: deploy fly.io
-        env:
-          SKIP_DEPLOY_AND_TAG: ${{ contains( join( env.COMMIT_MESSAGES ), '#skip' ) }}
-        if: ${{ github.event_name == 'push' && !env.SKIP_DEPLOY_AND_TAG == 'true' }}
+        if: |
+          github.event_name == 'push' &&
+          contains( join( toJson(github.event.commits.*.message) ), '#skip' ) == 'false'
         run: flyctl deploy --remote-only
   tag_release:
     needs: [simple_deployment_pipeline]
@@ -46,9 +45,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Bump version and push tag
-        if: ${{ github.event_name == 'push' && !env.SKIP_DEPLOY_AND_TAG == 'true'}}
+        if: |
+          github.event_name == 'push' &&
+          contains( join( toJson(github.event.commits.*.message) ), '#skip' ) == 'false'
         uses: anothrNick/github-tag-action@1.36.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
-          SKIP_DEPLOY_AND_TAG: ${{ contains( join( env.COMMIT_MESSAGES ), '#skip' ) }}
