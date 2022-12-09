@@ -8,6 +8,7 @@ on:
   pull_request:
     branches: [master]
     types: [opened, synchronize]
+
 env:
   COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
 
@@ -25,5 +26,5 @@ jobs:
       - name: test expressions
         if: ${{ env.SKIP_DEPLOY_AND_TAG == 'true' }}
         run: echo "SKIP_DEPLOY_AND_TAG=TRUE"
-        if: ${{ !env.SKIP_DEPLOY_AND_TAG == 'true' }}
+        if: ${{ env.SKIP_DEPLOY_AND_TAG == 'false }}
         run: echo "SKIP_DEPLOY_AND_TAG=FALSE"
