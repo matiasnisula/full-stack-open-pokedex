@@ -10,9 +10,10 @@ on:
     types: [opened, synchronize]
 env:
   COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
-  SKIP_DEPLOY_AND_TAG: ${{ contains( join( env.COMMIT_MESSAGES ), '#skip' ) }}
 
 testing:
+    env:
+      SKIP_DEPLOY_AND_TAG: ${{ contains( join( env.COMMIT_MESSAGES ), '#skip' ) }}
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
