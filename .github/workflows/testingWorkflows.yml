@@ -9,16 +9,16 @@ on:
     branches: [master]
     types: [opened, synchronize]
 
-#${{ contains( env.COMMIT_MESSAGES_STRING, '#skip' ) }}
+
 
 env:
   COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
-  SKIP_DEPLOY_AND_TAG: true
+  SKIP_DEPLOY_AND_TAG: ${{ contains( join( toJson(github.event.commits.*.message) ), '#skip' ) }}
 
 jobs:
   testing:
     env:
-      COMMIT_MESSAGES_STRING: ${{ join( env.COMMIT_MESSAGES ) }}
+      COMMIT_MESSAGES_STRING: ${{ join( toJson(github.event.commits.*.message) ) }}
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
@@ -29,8 +29,8 @@ jobs:
       - name: print env skip-deploy
         run: echo "$SKIP_DEPLOY_AND_TAG"
       - name: skip deploy true
-        if: ${{ env.SKIP_DEPLOY_AND_TAG == 'true' }}
+        if: ${{ contains( join( toJson(github.event.commits.*.message) ), '#skip' ) == 'true' }}
         run: echo "SKIP_DEPLOY_AND_TAG=TRUE"
       - name: skip deploy false
-        if: ${{ env.SKIP_DEPLOY_AND_TAG == 'false' }}
+        if: ${{ contains( join( toJson(github.event.commits.*.message) ), '#skip' ) == 'false' }}
         run: echo "SKIP_DEPLOY_AND_TAG=FALSE"
