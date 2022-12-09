@@ -15,7 +15,7 @@ env:
 jobs:
   testing:
     env:
-      SKIP_DEPLOY_AND_TAG: ${{ contains( join( env.COMMIT_MESSAGES ), '#skip' ) }}
+      SKIP_DEPLOY_AND_TAG: ${{ contains( join( $COMMIT_MESSAGES ), '#skip' ) }}
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
@@ -23,8 +23,9 @@ jobs:
         run: echo "$COMMIT_MESSAGES"
       - name: print env skip-deploy
         run: echo "$SKIP_DEPLOY_AND_TAG"
-      - name: test expressions
+      - name: skip deploy true
         if: ${{ env.SKIP_DEPLOY_AND_TAG == 'true' }}
         run: echo "SKIP_DEPLOY_AND_TAG=TRUE"
+      - name: skip deploy false
         if: ${{ env.SKIP_DEPLOY_AND_TAG == 'false }}
         run: echo "SKIP_DEPLOY_AND_TAG=FALSE"
