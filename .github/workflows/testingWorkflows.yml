@@ -13,11 +13,12 @@ on:
 
 env:
   COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
-  COMMIT_MESSAGES_STRING: ${{ join( env.COMMIT_MESSAGES ) }}
   SKIP_DEPLOY_AND_TAG: true
 
 jobs:
   testing:
+    env:
+      COMMIT_MESSAGES_STRING: ${{ join( env.COMMIT_MESSAGES ) }}
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
