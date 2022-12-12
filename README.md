@@ -4,6 +4,8 @@ This repository is used for the CI/CD module of the Full stack open course
 
 Fork the repository to complete course exercises
 
+Link to the [phonebook app](https://github.com/matiasnisula/phonebook-app-cicd) for the exercise 11.20.
+
 ## Commands
 
 Start by running `npm install` inside the project folder
